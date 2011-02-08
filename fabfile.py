@@ -121,7 +121,7 @@ class ProjectEnvironment(object):
 
     def load_database_from(self, other_db_file):
         with fab.cd(self.projdir):
-            fab.run('./manage.py db_load --noinput %s' % other_db_file)
+            fab.run('zcat %s | ./manage.py dbshell' % other_db_file)
 
     def clear_database(self):
         with fab.cd(self.projdir):
@@ -204,7 +204,7 @@ def fetch_data(variant):
     if not _yes("Reset local database content from '%s'?" % variant):
         return
     fab.local('cd %s; ./manage.py db_clear --noinput' % project_dir)
-    fab.local('cd %s; ./manage.py db_load %s --noinput' %
+    fab.local('cd %s; zcat %s | ./manage.py dbshell' %
             (project_dir, local_db_file))
 
     if _yes("Fetch uploads as well?"):
